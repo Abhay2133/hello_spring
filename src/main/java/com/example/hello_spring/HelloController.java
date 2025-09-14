@@ -15,6 +15,40 @@ public class HelloController {
 		return "Greetings from Spring Boot!";
 	}
 
+	@GetMapping("/memory")
+	public MemoryResponse getMemoryUsage() {
+		Runtime runtime = Runtime.getRuntime();
+		long totalMemory = runtime.totalMemory();
+		long freeMemory = runtime.freeMemory();
+		long usedMemory = totalMemory - freeMemory;
+		long maxMemory = runtime.maxMemory();
+		
+		return new MemoryResponse(usedMemory, freeMemory, totalMemory, maxMemory);
+	}
+
+	/**
+	 * Memory response data class
+	 */
+	public static class MemoryResponse {
+		private final long usedMemory;
+		private final long freeMemory;
+		private final long totalMemory;
+		private final long maxMemory;
+		
+		public MemoryResponse(long usedMemory, long freeMemory, long totalMemory, long maxMemory) {
+			this.usedMemory = usedMemory;
+			this.freeMemory = freeMemory;
+			this.totalMemory = totalMemory;
+			this.maxMemory = maxMemory;
+		}
+		
+		// Getters
+		public long getUsedMemory() { return usedMemory; }
+		public long getFreeMemory() { return freeMemory; }
+		public long getTotalMemory() { return totalMemory; }
+		public long getMaxMemory() { return maxMemory; }
+	}
+
 	@GetMapping("/ping-status")
 	public PingService.PingStatus getPingStatus() {
 		return pingService.getStatus();

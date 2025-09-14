@@ -106,12 +106,6 @@ jobs:
           echo "Response: $(echo $response | sed 's/HTTP_STATUS:[0-9]*//')"
           exit 1
         fi
-        
-    - name: Wait for deployment
-      run: |
-        echo "Waiting 30 seconds for deployment to start..."
-        sleep 30
-        echo "Render deployment should be in progress. Check your Render dashboard for status."
 
   notify:
     runs-on: ubuntu-latest
