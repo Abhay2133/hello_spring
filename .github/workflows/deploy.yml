@@ -92,7 +92,7 @@ jobs:
     - name: Trigger Render Webhook
       run: |
         echo "Triggering Render deployment..."
-        response=$(curl -X POST "${{ vars.RENDER_WEBHOOK_URL }}" \
+        response=$(curl -X POST "${{ secrets.RENDER_WEBHOOK_URL }}" \
           -H "Content-Type: application/json" \
           -w "HTTP_STATUS:%{http_code}" \
           -s)
