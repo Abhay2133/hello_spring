@@ -1,0 +1,137 @@
+name: Deploy to Docker Hub and Render
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hello-spring
+  REGISTRY: docker.io
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test Application
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+        
+    - name: Run tests
+      run: ./mvnw clean test
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    name: Build and Push Docker Image
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_IMAGE }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+          
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+        
+    - name: Image digest
+      run: echo ${{ steps.build.outputs.digest }}
+
+  deploy-render:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    name: Trigger Render Deployment
+    
+    steps:
+    - name: Trigger Render Webhook
+      run: |
+        echo "Triggering Render deployment..."
+        response=$(curl -X POST "${{ vars.RENDER_WEBHOOK_URL }}" \
+          -H "Content-Type: application/json" \
+          -w "HTTP_STATUS:%{http_code}" \
+          -s)
+        
+        http_status=$(echo $response | grep -o "HTTP_STATUS:[0-9]*" | cut -d: -f2)
+        
+        if [ "$http_status" -eq 200 ] || [ "$http_status" -eq 201 ] || [ "$http_status" -eq 204 ]; then
+          echo "✅ Render deployment triggered successfully (HTTP $http_status)"
+        else
+          echo "❌ Failed to trigger Render deployment (HTTP $http_status)"
+          echo "Response: $(echo $response | sed 's/HTTP_STATUS:[0-9]*//')"
+          exit 1
+        fi
+        
+    - name: Wait for deployment
+      run: |
+        echo "Waiting 30 seconds for deployment to start..."
+        sleep 30
+        echo "Render deployment should be in progress. Check your Render dashboard for status."
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [test, build-and-push, deploy-render]
+    if: always() && github.ref == 'refs/heads/main'
+    name: Deployment Status
+    
+    steps:
+    - name: Deployment Success
+      if: needs.deploy-render.result == 'success'
+      run: |
+        echo "🎉 Deployment completed successfully!"
+        echo "📦 Docker image pushed to Docker Hub"
+        echo "🚀 Render deployment triggered"
+        
+    - name: Deployment Failed
+      if: needs.test.result == 'failure' || needs.build-and-push.result == 'failure' || needs.deploy-render.result == 'failure'
+      run: |
+        echo "❌ Deployment failed!"
+        echo "Test result: ${{ needs.test.result }}"
+        echo "Build result: ${{ needs.build-and-push.result }}"
+        echo "Deploy result: ${{ needs.deploy-render.result }}"
+        exit 1
