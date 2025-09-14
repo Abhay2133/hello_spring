@@ -1,0 +1,51 @@
+# Ignore files that shouldn't be included in Docker build context
+
+# Target directory (build artifacts)
+target/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+HELP.md
+
+# Docker files (except Dockerfile)
+docker-compose.yml
+docker-compose.yaml
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Node modules (if any)
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Test reports
+test-results/
+
+# Coverage reports
+coverage/
+
+# Render deployment file
+render.yaml
