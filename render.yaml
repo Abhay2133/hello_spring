@@ -7,7 +7,16 @@ services:
     envVars:
       - key: PORT
         value: 8080
-    healthCheckPath: /
+      # Ping Service Configuration
+      - key: PING_ENABLED
+        value: true
+      - key: PING_URL
+        value: https://hello-spring-xxxx.onrender.com  # Update with your actual URL
+      - key: PING_INTERVAL
+        value: 5
+      - key: PING_LOG_LEVEL
+        value: INFO
+    healthCheckPath: /health
     disk:
       name: data
       mountPath: /app/data

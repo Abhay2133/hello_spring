@@ -170,7 +170,16 @@ logs: ## Show application logs (if running in Docker)
 
 health: ## Check application health
 	@echo "$(YELLOW)Checking application health...$(NC)"
-	@curl -s http://localhost:$(PORT)/ && echo "$(GREEN)\nApplication is healthy!$(NC)" || echo "$(RED)Application is not responding$(NC)"
+	@curl -s http://localhost:$(PORT)/health && echo "$(GREEN)\nApplication is healthy!$(NC)" || echo "$(RED)Application is not responding$(NC)"
+
+ping-status: ## Check ping service status
+	@echo "$(YELLOW)Checking ping service status...$(NC)"
+	@curl -s http://localhost:$(PORT)/ping-status | jq '.' 2>/dev/null || curl -s http://localhost:$(PORT)/ping-status || echo "$(RED)Application is not responding$(NC)"
+
+test-ping: ## Test ping service with local configuration
+	@echo "$(YELLOW)Testing ping service locally...$(NC)"
+	@echo "$(BLUE)Starting application with ping enabled...$(NC)"
+	PING_ENABLED=true PING_URL=http://localhost:$(PORT)/ PING_INTERVAL=1 ./mvnw spring-boot:run
 
 ## Quick Commands
 quick-start: clean package docker-build docker-run ## Quick start: clean, build, package, docker build and run

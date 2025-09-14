@@ -22,6 +22,7 @@ A simple Spring Boot web application demonstrating containerized deployment with
 - **PR Previews** for testing changes
 - **Health checks** and monitoring ready
 - **Production-optimized** Docker image
+- **Automatic URL Ping Service** to keep apps alive on free hosting
 
 ## 🛠 Technology Stack
 
@@ -163,16 +164,67 @@ This project is configured for automatic deployment on Render.com:
 | Method | Endpoint | Description | Response |
 |--------|----------|-------------|----------|
 | GET | `/` | Welcome message | `"Greetings from Spring Boot!"` |
+| GET | `/health` | Application health status | JSON with health info and ping status |
+| GET | `/ping-status` | Ping service status | JSON with ping configuration and stats |
 
 ### Example Usage
 
 ```bash
-# Test the API
+# Test the main API
 curl http://localhost:8080/
 
-# Response
-"Greetings from Spring Boot!"
+# Check application health
+curl http://localhost:8080/health
+
+# Check ping service status
+curl http://localhost:8080/ping-status
+
+# Response examples
+curl http://localhost:8080/health
+{
+  "status": "UP",
+  "message": "Hello Spring Boot is running",
+  "timestamp": 1694678400000,
+  "pingStatus": {
+    "enabled": true,
+    "url": "https://example.com",
+    "intervalMinutes": 5,
+    "totalPings": 42,
+    "lastResult": "SUCCESS - Response time: 234ms",
+    "lastPingTime": "2025-09-14 10:30:00"
+  }
+}
 ```
+
+## 🔔 Ping Service (Keep-Alive)
+
+The application includes an automatic ping service to keep your app alive on free hosting services like Render.com that sleep inactive apps.
+
+### Configuration
+
+Set these environment variables:
+
+```bash
+# Enable ping service
+PING_ENABLED=true
+
+# URL to ping (usually your own app URL)
+PING_URL=https://your-app.onrender.com
+
+# Ping interval in minutes (default: 5)
+PING_INTERVAL=5
+
+# Log level for ping service (default: INFO)
+PING_LOG_LEVEL=INFO
+```
+
+### Features
+
+- **Configurable interval** (default: 5 minutes)
+- **Automatic logging** with timestamps and response times
+- **Error handling** with retry logic
+- **Status monitoring** via `/ping-status` endpoint
+- **Health integration** in `/health` endpoint
 
 ## 📁 Project Structure
 
