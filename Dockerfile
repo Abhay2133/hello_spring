@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for Spring Boot application
 
 # Stage 1: Build the application
-FROM maven:3.9.4-openjdk-17 AS build
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copy Maven wrapper and pom.xml first for dependency caching
@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Runtime image
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Create a non-root user for security

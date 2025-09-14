@@ -1,0 +1,64 @@
+# Alternative render.yaml configurations for different Docker registries
+
+# Option 1: Docker Hub (Public)
+services:
+  - type: web
+    name: hello-spring
+    env: docker
+    image:
+      url: abhaybisht01/hello-spring:latest
+    envVars:
+      - key: PORT
+        value: 8080
+    healthCheckPath: /
+
+---
+
+# Option 2: Docker Hub (Private - requires credentials)
+services:
+  - type: web
+    name: hello-spring
+    env: docker
+    image:
+      url: abhaybisht01/hello-spring:latest
+      creds:
+        username: abhaybisht01
+        passwordFromEnvVar: DOCKER_HUB_TOKEN  # Set this in Render dashboard
+    envVars:
+      - key: PORT
+        value: 8080
+    healthCheckPath: /
+
+---
+
+# Option 3: GitHub Container Registry
+services:
+  - type: web
+    name: hello-spring
+    env: docker
+    image:
+      url: ghcr.io/abhay2133/hello-spring:latest
+      creds:
+        username: Abhay2133
+        passwordFromEnvVar: GITHUB_TOKEN  # Set this in Render dashboard
+    envVars:
+      - key: PORT
+        value: 8080
+    healthCheckPath: /
+
+---
+
+# Option 4: AWS ECR (Elastic Container Registry)
+services:
+  - type: web
+    name: hello-spring
+    env: docker
+    image:
+      url: 123456789012.dkr.ecr.us-east-1.amazonaws.com/hello-spring:latest
+      creds:
+        username: AWS
+        passwordFromEnvVar: ECR_PASSWORD  # Set this in Render dashboard
+    envVars:
+      - key: PORT
+        value: 8080
+    healthCheckPath: /
