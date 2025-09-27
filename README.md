@@ -8,6 +8,7 @@ A simple Spring Boot web application demonstrating containerized deployment with
 - [Technology Stack](#technology-stack)
 - [Quick Start](#quick-start)
 - [Development](#development)
+- [Database Configuration](#database-configuration)
 - [Docker](#docker)
 - [Deployment](#deployment)
 - [API Endpoints](#api-endpoints)
@@ -17,6 +18,9 @@ A simple Spring Boot web application demonstrating containerized deployment with
 ## ✨ Features
 
 - **Simple REST API** with Spring Boot
+- **Database Integration** with PostgreSQL (dev/prod) and H2 (testing)
+- **JPA/Hibernate ORM** with automatic schema management
+- **Environment-based Configuration** with multiple profiles
 - **Containerized** with Docker multi-stage build
 - **Auto-deployment** on Render.com
 - **PR Previews** for testing changes
@@ -28,6 +32,9 @@ A simple Spring Boot web application demonstrating containerized deployment with
 
 - **Java 17** - Programming language
 - **Spring Boot 3.5.5** - Application framework
+- **Spring Data JPA** - Database abstraction layer with Hibernate
+- **PostgreSQL** - Primary database for development and production
+- **H2 Database** - In-memory database for testing
 - **Maven 3.9.9** - Build tool
 - **Docker** - Containerization
 - **Render.com** - Cloud deployment platform
@@ -104,6 +111,79 @@ make help
 # Skip tests during build
 ./mvnw clean package -DskipTests
 ```
+
+## 🗄️ Database Configuration
+
+This application uses **PostgreSQL** for development/production and **H2** for testing with **Hibernate** as the ORM.
+
+### Environment Setup
+
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure your database connection in `.env`:**
+   ```bash
+   # Application Profile (dev, test, prod)
+   SPRING_PROFILES_ACTIVE=dev
+
+   # PostgreSQL Database Configuration
+   DATABASE_URL=jdbc:postgresql://localhost:5432/hello_spring
+   DATABASE_USERNAME=postgres
+   DATABASE_PASSWORD=your_password
+
+   # JPA/Hibernate Configuration
+   HIBERNATE_DDL_AUTO=update
+   JPA_SHOW_SQL=true
+   ```
+
+### Database Profiles
+
+#### Development (`dev` profile)
+- Uses **PostgreSQL** database
+- `hibernate.ddl-auto=update` - Updates schema automatically
+- SQL logging enabled for debugging
+
+#### Testing (`test` profile) 
+- Uses **H2** in-memory database
+- `hibernate.ddl-auto=create-drop` - Creates fresh schema per test
+- Automatic cleanup after tests
+
+#### Production (`prod` profile)
+- Uses **PostgreSQL** database  
+- `hibernate.ddl-auto=validate` - Only validates existing schema
+- SQL logging disabled for performance
+
+### PostgreSQL Setup
+
+1. **Install PostgreSQL** (using Docker):
+   ```bash
+   docker run --name postgres-dev \
+     -e POSTGRES_DB=hello_spring \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=password \
+     -p 5432:5432 \
+     -d postgres:15
+   ```
+
+2. **Or install locally:**
+   - Ubuntu/Debian: `sudo apt install postgresql postgresql-contrib`
+   - macOS: `brew install postgresql`
+   - Windows: Download from postgresql.org
+
+3. **Create database:**
+   ```sql
+   CREATE DATABASE hello_spring;
+   ```
+
+### API Endpoints for Database Demo
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/users?username=john&email=john@example.com` | Create a new user |
+| GET | `/users` | Get all users |
+| GET | `/users/search?username=john` | Find user by username |
 
 ## 🐳 Docker
 

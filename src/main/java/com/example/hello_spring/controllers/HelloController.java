@@ -3,9 +3,16 @@ package com.example.hello_spring.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.hello_spring.cron_jobs.PingService;
 import com.example.hello_spring.services.CacheService;
+import com.example.hello_spring.entities.User;
+import com.example.hello_spring.repositories.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class HelloController {
@@ -15,6 +22,9 @@ public class HelloController {
 
 	@Autowired
 	private CacheService cacheService;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@GetMapping("/")
 	public String index() {
@@ -88,6 +98,23 @@ public class HelloController {
 	@GetMapping("/ping-status")
 	public PingService.PingStatus getPingStatus() {
 		return pingService.getStatus();
+	}
+
+	// Database demonstration endpoints
+	@PostMapping("/users")
+	public User createUser(@RequestParam String username, @RequestParam String email) {
+		User user = new User(username, email);
+		return userRepository.save(user);
+	}
+
+	@GetMapping("/users")
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+
+	@GetMapping("/users/search")
+	public Optional<User> findUserByUsername(@RequestParam String username) {
+		return userRepository.findByUsername(username);
 	}
 
 	@GetMapping("/health")
