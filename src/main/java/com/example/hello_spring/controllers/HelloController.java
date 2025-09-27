@@ -5,12 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hello_spring.cron_jobs.PingService;
+import com.example.hello_spring.services.CacheService;
 
 @RestController
 public class HelloController {
 
 	@Autowired
 	private PingService pingService;
+
+	@Autowired
+	private CacheService cacheService;
 
 	@GetMapping("/")
 	public String index() {
@@ -92,6 +96,34 @@ public class HelloController {
 			System.currentTimeMillis(), pingService.getStatus());
 	}
 
+	@GetMapping("/cache/demo")
+	public CacheDemoResponse cacheDemoEndpoint() {
+		// Demonstrate the cache service usage
+		String key = "demo-key";
+		String value = "Hello from Cache! Timestamp: " + System.currentTimeMillis();
+		
+		// Try to get existing value
+		Object existingValue = cacheService.get(key);
+		
+		if (existingValue == null) {
+			// Put a new value if none exists
+			cacheService.put(key, value);
+			return new CacheDemoResponse("Cache was empty. Stored new value: " + value, 
+				cacheService.size(), false);
+		} else {
+			// Return existing cached value
+			return new CacheDemoResponse("Retrieved from cache: " + existingValue, 
+				cacheService.size(), true);
+		}
+	}
+
+	@GetMapping("/cache/stats")
+	public CacheStatsResponse cacheStats() {
+		// Show cache statistics
+		return new CacheStatsResponse(cacheService.size(), 
+			"Cache is ready for use. Try /cache/demo to test it!");
+	}
+
 	/**
 	 * Health response data class
 	 */
@@ -114,5 +146,40 @@ public class HelloController {
 		public String getMessage() { return message; }
 		public long getTimestamp() { return timestamp; }
 		public PingService.PingStatus getPingStatus() { return pingStatus; }
+	}
+
+	/**
+	 * Cache demo response data class
+	 */
+	public static class CacheDemoResponse {
+		private final String message;
+		private final long cacheSize;
+		private final boolean wasHit;
+
+		public CacheDemoResponse(String message, long cacheSize, boolean wasHit) {
+			this.message = message;
+			this.cacheSize = cacheSize;
+			this.wasHit = wasHit;
+		}
+
+		public String getMessage() { return message; }
+		public long getCacheSize() { return cacheSize; }
+		public boolean wasHit() { return wasHit; }
+	}
+
+	/**
+	 * Cache stats response data class
+	 */
+	public static class CacheStatsResponse {
+		private final long size;
+		private final String status;
+
+		public CacheStatsResponse(long size, String status) {
+			this.size = size;
+			this.status = status;
+		}
+
+		public long getSize() { return size; }
+		public String getStatus() { return status; }
 	}
 }
