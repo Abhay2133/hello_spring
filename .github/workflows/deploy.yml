@@ -41,6 +41,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main'
     name: Build and Push Docker Image
+    strategy:
+      matrix:
+        architecture: [ 'amd64', 'arm64' ]
     
     steps:
     - name: Checkout code
@@ -77,7 +80,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/${{ matrix.architecture }}
         
     - name: Image digest
       run: echo ${{ steps.build.outputs.digest }}
