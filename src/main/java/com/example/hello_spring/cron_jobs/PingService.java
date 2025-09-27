@@ -1,4 +1,4 @@
-package com.example.hello_spring;
+package com.example.hello_spring.cron_jobs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
