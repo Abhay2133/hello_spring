@@ -12,7 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = "spring.devtools.restart.enabled=false")
+@TestPropertySource(properties = {
+    "spring.devtools.restart.enabled=false",
+    "spring.profiles.active=test"
+})
 class HelloSpringApplicationTests {
 
   @LocalServerPort

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for CacheService to verify caching functionality
  */
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 class CacheServiceTest {
 
     private CacheService cacheService;
