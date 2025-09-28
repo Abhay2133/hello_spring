@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Spring Boot - Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="Hello Spring Boot - A containerized Spring Boot web application demonstrating modern deployment with Docker and Render.com integration.">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🚀 Hello Spring Boot</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="#hero">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#getting-started">Getting Started</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to Hello Spring Boot</h1>
+                <p class="hero-subtitle">A simple Spring Boot web application demonstrating containerized deployment with Docker and Render.com integration.</p>
+                <div class="hero-buttons">
+                    <a href="#getting-started" class="btn btn-primary">Get Started</a>
+                    <a href="https://github.com/Abhay2133/hello_spring" class="btn btn-secondary" target="_blank">View on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features/Highlights Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>REST API</h3>
+                    <p>Simple REST API with Spring Boot framework including health checks and monitoring endpoints.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗄️</div>
+                    <h3>Database Integration</h3>
+                    <p>PostgreSQL for production, H2 for testing with JPA/Hibernate ORM and automatic schema management.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🐳</div>
+                    <h3>Containerized</h3>
+                    <p>Docker multi-stage build with production-optimized image for consistent deployment across environments.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Auto-deployment</h3>
+                    <p>Automated deployment on Render.com with PR previews and health check monitoring.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Environment Config</h3>
+                    <p>Environment-based configuration with multiple profiles (dev, test, prod) for flexible deployment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3>Ping Service</h3>
+                    <p>Automatic URL ping service to keep applications alive on free hosting platforms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">About This Project</h2>
+                <p class="about-description">
+                    Hello Spring Boot is a demonstration project showcasing modern Spring Boot application development 
+                    and deployment practices. Built with Java 17 and Spring Boot 3.5.5, this application demonstrates 
+                    containerization, database integration, automated testing, and cloud deployment strategies.
+                </p>
+                <div class="tech-stack">
+                    <h3>Technology Stack</h3>
+                    <div class="tech-grid">
+                        <span class="tech-badge">Java 17</span>
+                        <span class="tech-badge">Spring Boot 3.5.5</span>
+                        <span class="tech-badge">Maven 3.9.9</span>
+                        <span class="tech-badge">PostgreSQL</span>
+                        <span class="tech-badge">H2 Database</span>
+                        <span class="tech-badge">Docker</span>
+                        <span class="tech-badge">Render.com</span>
+                        <span class="tech-badge">GitHub Actions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Getting Started Section -->
+    <section id="getting-started" class="getting-started">
+        <div class="container">
+            <h2 class="section-title">Getting Started</h2>
+            <div class="getting-started-content">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Clone Repository</h3>
+                        <p>Clone the repository to your local machine:</p>
+                        <code>git clone https://github.com/Abhay2133/hello_spring.git</code>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Run Application</h3>
+                        <p>Start the application using Maven wrapper:</p>
+                        <code>./mvnw spring-boot:run</code>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Access Endpoints</h3>
+                        <p>Visit the application endpoints:</p>
+                        <div class="endpoint-list">
+                            <div class="endpoint">
+                                <strong>GET /</strong> - Homepage
+                            </div>
+                            <div class="endpoint">
+                                <strong>GET /health</strong> - Application health status
+                            </div>
+                            <div class="endpoint">
+                                <strong>GET /memory</strong> - Memory usage information
+                            </div>
+                            <div class="endpoint">
+                                <strong>GET /ping-status</strong> - Ping service status
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact/CTA Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <p class="contact-description">
+                    Interested in learning more about this project or contributing? 
+                    Check out the resources below or get in touch!
+                </p>
+                <div class="contact-links">
+                    <a href="https://github.com/Abhay2133/hello_spring" class="contact-link" target="_blank">
+                        <span class="contact-icon">📂</span>
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="https://github.com/Abhay2133/hello_spring/issues" class="contact-link" target="_blank">
+                        <span class="contact-icon">🐛</span>
+                        <span>Report Issues</span>
+                    </a>
+                    <a href="https://hub.docker.com/r/abhaybisht01/hello-spring" class="contact-link" target="_blank">
+                        <span class="contact-icon">🐳</span>
+                        <span>Docker Hub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>&copy; 2024 Hello Spring Boot. Built with ❤️ using Spring Boot.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/Abhay2133" target="_blank">@Abhay2133</a>
+                    <span class="divider">|</span>
+                    <a href="https://spring.io/" target="_blank">Spring Boot</a>
+                    <span class="divider">|</span>
+                    <a href="https://render.com/" target="_blank">Render.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

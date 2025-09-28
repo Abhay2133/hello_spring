@@ -26,10 +26,7 @@ public class HelloController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@GetMapping("/")
-	public String index() {
-		return "Greetings from Spring Boot!";
-	}
+
 
 	@GetMapping("/memory")
 	public MemoryResponse getMemoryUsage() {
