@@ -13,7 +13,11 @@ A simple Spring Boot web application demonstrating containerized deployment with
 - [Deployment](#deployment)
 - [API Endpoints](#api-endpoints)
 - [Project Structure](#project-structure)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
+- [License](#license)
+- [Links](#links)
+- [Contact](#contact)
 
 ## ✨ Features
 
@@ -83,17 +87,25 @@ make clean
 # Package as JAR
 make package
 
-# Build Docker image
-make docker-build
+# Database migrations
+make migrate              # Run pending migrations
+make migrate-info         # Show migration status
+make migrate-create name=add_column  # Create new migration
+make migrate-validate     # Validate migrations
 
-# Push Docker image
-make docker-push
+# Docker commands
+make docker-build         # Build Docker image
+make docker-run           # Run container
+make docker-push          # Push to Docker Hub
+make docker-stop          # Stop container
 
-# Deploy to Render.com
-make deploy
+# Deployment
+make deploy               # Deploy to Render.com
 
-# Show help
-make help
+# Utility commands
+make health               # Check app health
+make status               # Show project status
+make help                 # Show all commands
 ```
 
 ### Manual Commands
@@ -114,7 +126,11 @@ make help
 
 ## 🗄️ Database Configuration
 
-This application uses **PostgreSQL** for development/production and **H2** for testing with **Hibernate** as the ORM.
+This application uses **PostgreSQL** for development/production and **H2** for testing with **Hibernate** as the ORM, and **Flyway** for database migrations.
+
+📚 **Detailed Documentation**: 
+- [Database Migrations Guide](./docs/DATABASE_MIGRATIONS.md) - Complete Flyway migration documentation
+- [Migration Quick Start](./docs/MIGRATION_SETUP.md) - Get started with migrations quickly
 
 ### Environment Setup
 
@@ -142,8 +158,9 @@ This application uses **PostgreSQL** for development/production and **H2** for t
 
 #### Development (`dev` profile)
 - Uses **PostgreSQL** database
-- `hibernate.ddl-auto=update` - Updates schema automatically
+- `hibernate.ddl-auto=validate` - Validates schema (Flyway manages changes)
 - SQL logging enabled for debugging
+- Flyway auto-migration enabled
 
 #### Testing (`test` profile) 
 - Uses **H2** in-memory database
@@ -154,6 +171,7 @@ This application uses **PostgreSQL** for development/production and **H2** for t
 - Uses **PostgreSQL** database  
 - `hibernate.ddl-auto=validate` - Only validates existing schema
 - SQL logging disabled for performance
+- Flyway migrations run automatically
 
 ### PostgreSQL Setup
 
@@ -212,7 +230,11 @@ docker logs <container-id>
 
 ### Render.com Deployment
 
-This project is configured for automatic deployment on Render.com:
+This project is configured for automatic deployment on Render.com using Docker and GitHub Actions.
+
+📚 **Deployment Documentation**: [GitHub Actions Deployment Guide](./docs/DEPLOYMENT.md)
+
+#### Quick Setup
 
 1. **Auto-Deploy**: Pushes to `main` branch trigger deployment
 2. **PR Previews**: Pull requests get preview URLs
@@ -310,14 +332,37 @@ PING_LOG_LEVEL=INFO
 
 ```
 hello_spring/
+├── docs/                                            # 📚 Documentation
+│   ├── DATABASE_MIGRATIONS.md                      # Database migration guide
+│   ├── MIGRATION_SETUP.md                          # Quick migration setup
+│   └── DEPLOYMENT.md                               # Deployment configuration
 ├── src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/example/hello_spring/
 │   │   │       ├── HelloSpringApplication.java    # Main application
-│   │   │       └── HelloController.java           # REST controller
+│   │   │       ├── AppConfig.java                 # Cache configuration
+│   │   │       ├── controllers/
+│   │   │       │   └── HelloController.java       # REST endpoints
+│   │   │       ├── cron_jobs/
+│   │   │       │   └── PingService.java           # Keep-alive service
+│   │   │       ├── entities/
+│   │   │       │   └── User.java                  # JPA entities
+│   │   │       ├── repositories/
+│   │   │       │   └── UserRepository.java        # Data access
+│   │   │       └── services/
+│   │   │           └── UserService.java           # Business logic
 │   │   └── resources/
-│   │       └── application.properties              # Configuration
+│   │       ├── application.properties              # Main configuration
+│   │       ├── application-dev.properties          # Dev config
+│   │       ├── application-prod.properties         # Prod config
+│   │       ├── application-test.properties         # Test config
+│   │       ├── db/migration/                       # Flyway migrations
+│   │       │   └── V1__create_users_table.sql     # Initial schema
+│   │       └── static/                             # Static web content
+│   │           ├── index.html
+│   │           ├── css/style.css
+│   │           └── js/script.js
 │   └── test/
 │       └── java/
 │           └── com/example/hello_spring/
@@ -331,6 +376,25 @@ hello_spring/
 ├── pom.xml                                          # Maven configuration
 └── README.md                                        # This file
 ```
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the [`docs/`](./docs/) directory:
+
+| Document | Description | Link |
+|----------|-------------|------|
+| **Database Migrations** | Complete guide to Flyway migrations, creating migrations, examples | [DATABASE_MIGRATIONS.md](./docs/DATABASE_MIGRATIONS.md) |
+| **Migration Quick Start** | Quick setup guide for getting started with migrations | [MIGRATION_SETUP.md](./docs/MIGRATION_SETUP.md) |
+| **Deployment Guide** | GitHub Actions setup, Docker Hub, Render.com configuration | [DEPLOYMENT.md](./docs/DEPLOYMENT.md) |
+
+### External Resources
+
+- **Spring Boot**: [Official Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- **Spring Data JPA**: [Reference Guide](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- **Flyway**: [Documentation](https://flywaydb.org/documentation/)
+- **PostgreSQL**: [Official Docs](https://www.postgresql.org/docs/)
+- **Docker**: [Get Started Guide](https://docs.docker.com/get-started/)
+- **Render.com**: [Documentation](https://render.com/docs)
 
 ## 🤝 Contributing
 

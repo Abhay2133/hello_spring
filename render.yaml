@@ -11,7 +11,7 @@ services:
       - key: PING_ENABLED
         value: true
       - key: PING_URL
-        value: https://hello-spring-xxxx.onrender.com  # Update with your actual URL
+        value: https://hello-spring-latest.onrender.com  # Update with your actual URL
       - key: PING_INTERVAL
         value: 5
       - key: PING_LOG_LEVEL

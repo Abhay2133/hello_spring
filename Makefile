@@ -24,7 +24,7 @@ NC := \033[0m # No Color
 .DEFAULT_GOAL := help
 
 # Phony targets
-.PHONY: help build run test clean package docker-build docker-run docker-push docker-stop docker-clean deploy install dev-setup lint format check-updates status logs
+.PHONY: help build run test clean package docker-build docker-run docker-push docker-stop docker-clean deploy install dev-setup lint format check-updates status logs migrate migrate-info migrate-validate migrate-clean migrate-repair migrate-baseline
 
 ## Help target
 help: ## Show this help message
@@ -74,6 +74,68 @@ clean: ## Clean build artifacts
 	@echo "$(YELLOW)Cleaning build artifacts...$(NC)"
 	./mvnw clean
 	@echo "$(GREEN)Clean completed!$(NC)"
+
+## Database Migration Commands
+migrate: ## Run database migrations
+	@echo "$(YELLOW)Running database migrations...$(NC)"
+	./mvnw flyway:migrate
+	@echo "$(GREEN)Migrations completed successfully!$(NC)"
+
+migrate-info: ## Show migration status and history
+	@echo "$(YELLOW)Fetching migration information...$(NC)"
+	./mvnw flyway:info
+
+migrate-validate: ## Validate applied migrations against available ones
+	@echo "$(YELLOW)Validating migrations...$(NC)"
+	./mvnw flyway:validate
+	@echo "$(GREEN)Migrations are valid!$(NC)"
+
+migrate-baseline: ## Baseline existing database at current version
+	@echo "$(YELLOW)Creating baseline for existing database...$(NC)"
+	./mvnw flyway:baseline
+	@echo "$(GREEN)Baseline created successfully!$(NC)"
+
+migrate-repair: ## Repair migration history (use with caution!)
+	@echo "$(RED)⚠️  WARNING: This will repair the migration history!$(NC)"
+	@read -p "Are you sure? (yes/no): " confirm; \
+	if [ "$$confirm" = "yes" ]; then \
+		./mvnw flyway:repair; \
+		echo "$(GREEN)Migration history repaired!$(NC)"; \
+	else \
+		echo "$(YELLOW)Repair cancelled.$(NC)"; \
+	fi
+
+migrate-clean: ## Clean database (⚠️ DANGER: Deletes all data!)
+	@echo "$(RED)⚠️  DANGER: This will delete ALL data in your database!$(NC)"
+	@read -p "Are you ABSOLUTELY sure? Type 'DELETE ALL DATA' to confirm: " confirm; \
+	if [ "$$confirm" = "DELETE ALL DATA" ]; then \
+		./mvnw flyway:clean; \
+		echo "$(RED)Database cleaned!$(NC)"; \
+	else \
+		echo "$(YELLOW)Clean cancelled.$(NC)"; \
+	fi
+
+migrate-create: ## Create a new migration file (usage: make migrate-create name=your_migration_name)
+	@if [ -z "$(name)" ]; then \
+		echo "$(RED)Error: Please provide a migration name$(NC)"; \
+		echo "$(YELLOW)Usage: make migrate-create name=add_user_column$(NC)"; \
+		exit 1; \
+	fi; \
+	VERSION=$$(ls -1 src/main/resources/db/migration/V*.sql 2>/dev/null | wc -l | xargs); \
+	VERSION=$$((VERSION + 1)); \
+	FILENAME="src/main/resources/db/migration/V$${VERSION}__$(name).sql"; \
+	echo "-- Migration: $(name)" > $$FILENAME; \
+	echo "-- Created: $$(date '+%Y-%m-%d %H:%M:%S')" >> $$FILENAME; \
+	echo "" >> $$FILENAME; \
+	echo "-- Add your SQL here" >> $$FILENAME; \
+	echo "" >> $$FILENAME; \
+	echo "$(GREEN)Created migration file: $$FILENAME$(NC)"; \
+	echo "$(YELLOW)Edit the file to add your SQL changes$(NC)"
+
+migrate-status: ## Show current database and migration status
+	@echo "$(CYAN)Database Migration Status$(NC)"
+	@echo "$(YELLOW)=========================$(NC)"
+	@./mvnw flyway:info || echo "$(RED)Failed to get migration info. Is database running?$(NC)"
 
 ## Docker Commands
 docker-build: ## Build Docker image

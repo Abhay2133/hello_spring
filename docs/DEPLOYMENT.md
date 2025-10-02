@@ -1,6 +1,16 @@
 # GitHub Actions Deployment Setup
 
+> **Main Documentation**: [README.md](../README.md)  
+> **Database Setup**: [DATABASE_MIGRATIONS.md](./DATABASE_MIGRATIONS.md)
+
 This document explains how to configure the GitHub repository with the necessary secrets and environment variables for the deployment workflow.
+
+## 📚 External Resources
+
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Docker Hub Documentation](https://docs.docker.com/docker-hub/)
+- [Render.com Documentation](https://render.com/docs)
+- [Docker Buildx Documentation](https://docs.docker.com/buildx/working-with-buildx/)
 
 ## Overview
 
